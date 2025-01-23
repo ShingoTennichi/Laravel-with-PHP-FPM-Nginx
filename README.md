@@ -1,4 +1,4 @@
-# Laravel API
+# Laravel Application with PHP-FPM and Nginx
 
 Note: The Laravel 11 support will be expired in 2026 / Feb / 03
 

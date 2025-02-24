@@ -95,7 +95,7 @@ app/
         └── AppError.php              # Base error handling class for uniform error handling
 
 
-========================================================================
+---
 
 From Gemini
 
@@ -232,3 +232,246 @@ Controllers use Use Cases.
 Use Cases use Domain Services and Repositories.
 Domain Services can use Entities (and other Domain Services).
 Repositories provide access to Entities.
+
+---
+
+From Chatgpt
+
+app/
+├── Domain/             👈 **(Business Rules & Entities)**
+│   ├── Models/         👈 Entities & Aggregate Roots
+│   ├── ValueObjects/   👈 Value Objects
+│   ├── Repositories/   👈 Repository Interfaces
+│   ├── Services/       👈 Domain Services (pure business logic)
+│   ├── Exceptions/     👈 Domain-specific exceptions
+│   ├── Events/         👈 Domain Events (if using event sourcing)
+│   ├── Policies/       👈 Domain-based authorization policies
+│   ├── Enums/          👈 Domain-specific Enums
+│   ├── Factories/      👈 Factories for Aggregate Creation
+│   ├── Interfaces/     👈 Domain-Level Interfaces
+│   ├── Contracts/      👈 Shared domain contracts
+│   ├── Rules/          👈 Custom validation rules (optional)
+│   ├── Seeders/        👈 Database seeding for domain entities
+│   ├── Providers/      👈 Domain service providers
+│   └── DTOs/           👈 (Optional) Domain-specific DTOs
+│
+├── Application/        👈 **(Application Layer - Use Cases)**
+│   ├── Services/       👈 Application Services (coordinates domain logic)
+│   ├── Queries/        👈 Read-Only Use Cases (CQRS Query)
+│   ├── Commands/       👈 Write-Only Use Cases (CQRS Command)
+│   ├── DTOs/           👈 Data Transfer Objects (for API responses)
+│   ├── Handlers/       👈 Command Handlers (if using CQRS)
+│   ├── Jobs/           👈 Background jobs (Application Layer logic)
+│   ├── Exceptions/     👈 Application-specific exceptions
+│   ├── Interfaces/     👈 Application interfaces (optional)
+│   ├── Policies/       👈 Application policies
+│   ├── Middleware/     👈 Application-specific middleware
+│   └── Providers/      👈 Application Service Providers
+│
+├── Presentation/       👈 **(Presentation Layer - User Interaction)**
+│   ├── Http/
+│   │   ├── Controllers/ 👈 API & Web Controllers
+│   │   ├── Requests/    👈 Form Requests (Validation)
+│   │   ├── Resources/   👈 API Resource Transformers
+│   │   ├── Middleware/  👈 HTTP Middleware
+│   │   ├── Routes/      👈 Route definitions
+│   │   ├── Views/       👈 Blade templates (if using UI)
+│   │   ├── Components/  👈 Livewire/Blade Components (if needed)
+│   │   ├── Providers/   👈 Presentation-specific service providers
+│   │   ├── Exceptions/  👈 Presentation layer exceptions (like 404s)
+│   │   ├── Policies/    👈 UI-level access control policies
+│   │   └── Responses/   👈 Custom Response classes (if needed)
+│
+├── Infrastructure/     👈 **(Infrastructure Layer - External Dependencies)**
+│   ├── Persistence/    👈 Database & Repositories (Implementation)
+│   ├── Clients/        👈 API Clients (external service integrations)
+│   ├── Services/       👈 Infrastructure services (e.g., caching, logging)
+│   ├── Adapters/       👈 Adapters for third-party systems
+│   ├── Providers/      👈 Infrastructure Service Providers
+│   ├── Console/        👈 Console Commands (CLI interactions)
+│   ├── Seeders/        👈 Database seeders
+│   ├── Factories/      👈 Database model factories
+│   ├── Jobs/           👈 Background jobs (if they depend on external services)
+│   ├── Exceptions/     👈 Infrastructure-specific exceptions
+│   └── Events/         👈 Infrastructure events (logging, monitoring)
+│
+├── Bootstrap/          👈 Laravel bootstrap files
+├── Config/             👈 Laravel config files (env settings)
+├── Database/           👈 Laravel database files (migrations, seeders)
+├── Public/             👈 Public assets (images, CSS, JS)
+├── Storage/            👈 File storage
+├── Tests/              👈 Unit & Feature tests
+├── Vendor/             👈 Composer dependencies
+└── composer.json       👈 Laravel dependencies
+
+---
+
+app/
+├── Application/
+│   ├── DTOs/
+│   │   ├── FakeAPIResponse.php  👈 Treat it as an Application Layer DTO
+
+app/
+├── Domain/
+│   ├── ValueObjects/
+│   │   ├── FakeAPIResponse.php  👈 Treat it as a Domain Layer Value Object
+
+
+
+Services come in 3 flavours: Domain Services, Application Services, and Infrastructure Services.
+
+--- 
+
+app/
+│── Application/               # Application Layer (Use Cases, DTOs, Services)
+│   ├── UseCase/
+│   │   ├── BookFlightUseCase.php
+│   │   ├── CancelBookingUseCase.php
+│   │   └── ...
+│   ├── DTO/
+│   │   ├── BookFlightDTO.php
+│   │   ├── PaymentDetailsDTO.php
+│   │   └── ...
+│   ├── Service/
+│   │   ├── PaymentService.php
+│   │   ├── NotificationService.php
+│   │   └── ...
+│   ├── EventListener/
+│   ├── Exception/
+│   └── Middleware/
+│
+│── Domain/                    # Domain Layer (Business Rules, Entities, Aggregates, Repositories)
+│   ├── Model/                 # Domain Models (Aggregates, Entities, VOs)
+│   │   ├── Booking.php
+│   │   ├── FareOption.php
+│   │   ├── Passenger.php
+│   │   ├── ValueObject/
+│   │   │   ├── PaymentDetailsVO.php
+│   │   │   ├── PriceVO.php
+│   │   │   └── ...
+│   │   ├── AggregateRoot/
+│   │   │   ├── BookingAggregate.php
+│   │   │   └── ...
+│   │   ├── Factory/
+│   │   │   ├── BookingFactory.php
+│   │   │   └── ...
+│   │   ├── DomainService/
+│   │   │   ├── BookingPricingService.php
+│   │   │   └── ...
+│   ├── Repository/             # Repository Interfaces
+│   │   ├── BookingRepository.php
+│   │   ├── FareOptionRepository.php
+│   │   ├── PassengerRepository.php
+│   │   └── ...
+│   ├── Event/
+│   │   ├── BookingCreated.php
+│   │   ├── PaymentFailed.php
+│   │   └── ...
+│   ├── Exception/
+│   ├── Policy/
+│   └── Specification/
+│
+│── Infrastructure/             # Infrastructure Layer (Persistence, External APIs)
+│   ├── Persistence/
+│   │   ├── Eloquent/
+│   │   │   ├── BookingEloquentRepository.php
+│   │   │   ├── FareOptionEloquentRepository.php
+│   │   │   └── ...
+│   ├── ExternalService/
+│   │   ├── StripePaymentGateway.php
+│   │   ├── SendGridEmailService.php
+│   │   └── ...
+│   ├── Adapter/
+│   ├── Cache/
+│   ├── FileStorage/
+│   ├── Queue/
+│   └── ...
+│
+│── Interface/                  # Interface Layer (Controllers, API, CLI)
+│   ├── Http/
+│   │   ├── Controller/
+│   │   │   ├── BookingController.php
+│   │   │   ├── PaymentController.php
+│   │   │   └── ...
+│   │   ├── Request/
+│   │   │   ├── BookFlightRequest.php
+│   │   │   └── ...
+│   │   ├── Resource/
+│   │   │   ├── BookingResource.php
+│   │   │   ├── PaymentResource.php
+│   │   │   └── ...
+│   ├── CLI/
+│   ├── WebSocket/
+│   └── GraphQL/
+│
+├── bootstrap/
+├── config/
+├── database/
+├── routes/
+│   ├── web.php
+│   ├── api.php
+│   ├── console.php
+│   └── ...
+└── tests/
+
+---
+
+project-root/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── mycompany/
+│   │   │           └── mydomain/
+│   │   │               ├── application/  <-- Use Cases (Application Services)
+│   │   │               │   ├── usecase1/
+│   │   │               │   │   ├── UseCase1Input.java
+│   │   │               │   │   ├── UseCase1Output.java
+│   │   │               │   │   ├── UseCase1.java  <-- Interface (Port)
+│   │   │               │   │   └── UseCase1Impl.java <-- Implementation (Adapter)
+│   │   │               │   ├── usecase2/
+│   │   │               │   │   └── ...
+│   │   │               │   ├── port/  <-- Interfaces (Ports) for external dependencies
+│   │   │               │   │   ├── UserRepository.java
+│   │   │               │   │   ├── NotificationService.java
+│   │   │               │   │   └── ...
+│   │   │               │   └── service/ <-- Domain Services (if needed)
+│   │   │               │       └── DomainSpecificService.java
+│   │   │               ├── domain/  <-- Core Domain Logic
+│   │   │               │   ├── model/  <-- Entities, Value Objects, Aggregates
+│   │   │               │   │   ├── User.java  <-- Entity
+│   │   │               │   │   ├── Address.java <-- Value Object
+│   │   │               │   │   ├── Order.java   <-- Aggregate Root
+│   │   │               │   │   ├── OrderItem.java <-- Part of Aggregate
+│   │   │               │   │   └── ...
+│   │   │               │   ├── repository/  <-- Interfaces for persistence (Ports)
+│   │   │               │   │   └── UserRepository.java
+│   │   │               │   ├── event/  <-- Domain Events
+│   │   │               │   │   └── OrderCreatedEvent.java
+│   │   │               │   ├── exception/ <-- Domain Exceptions
+│   │   │               │   │   └── InvalidOrderException.java
+│   │   │               │   └── service/  <-- Domain Services (Core Logic)
+│   │   │               │       └── OrderValidationService.java
+│   │   │               ├── infrastructure/ <-- Adapters (Implementations)
+│   │   │               │   ├── persistence/
+│   │   │               │   │   └── UserRepositoryJpa.java  <-- Adapter for UserRepository
+│   │   │               │   ├── notification/
+│   │   │               │   │   └── NotificationServiceImpl.java <-- Adapter for NotificationService
+│   │   │               │   ├── messagequeue/
+│   │   │               │   │   └── OrderCreatedEventPublisher.java
+│   │   │               │   └── ...
+│   │   │               ├── interface/  <-- API or UI related (Adapters)
+│   │   │               │   ├── rest/
+│   │   │               │   │   └── UserController.java
+│   │   │               │   └── web/
+│   │   │               │       └── ...
+│   │   │               └── MyDomain.java  <-- Marker/Configuration class for the domain
+│   │   └── resources/
+│   │       └── ...  <-- Configuration, properties, etc.
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── mycompany/
+│                   └── mydomain/
+│                       └── ... <--- Mirror the main structure for tests
+└── build.gradle  <-- or pom.xml, etc.
